@@ -304,14 +304,13 @@ const randomInt = (min, max) =>
   Math.trunc(Math.random() * (max - min) + 1) + min;
 console.log(randomInt(10, 20));
 
-
 //Rounding integers
- 
+
 console.log(Math.round(23.3)); // under 5 will round down.
 console.log(Math.round(23.9)); // over 5 will round up.
 
 console.log(Math.ceil(23.3)); // always round up
-console.log(Math.ceil(23.9));  // always round up
+console.log(Math.ceil(23.9)); // always round up
 
 console.log(Math.ceil(-23.3));
 console.log(Math.floor(23.3));
@@ -326,3 +325,28 @@ console.log(Math.trunc(-23.3));
 console.log((2.7).toFixed(0));
 console.log((2.7).toFixed(2));
 
+//Reminder operator - it returns the reminder - vognangsho
+console.log(5 % 2);
+
+//if the number is visible by 2, then thats a even number.
+console.log(6 % 2);
+console.log(6 / 2);
+
+console.log(7 % 2);
+console.log(7 / 2);
+
+const isEven = n => n % 2 === 0;
+console.log(isEven(2));
+
+labelBalance.addEventListener('click', function () {
+  [...document.querySelectorAll('.movements__row')].forEach(function(row, i){
+    if(i % 2 === 0 ) row.style.backgroundColor = 'blue'
+  })
+  
+})
+
+// underscore in number, is numeric separators. It's shows how is the number ex:
+const diameter = 245_464_432_00
+console.log(diameter) // 24546443200
+
+// Numeric operators doesn't support in string. It always support number.
