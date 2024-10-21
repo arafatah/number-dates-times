@@ -380,3 +380,28 @@ console.log(huge + ' Is really big num');
 //Divisions
 console.log(10n / 3n);
 console.log(10 / 3);
+/*
+// Create a date
+const now2 = new Date();
+console.log(now2);
+
+console.log(new Date('Aug 02 2939 23:12:44'));
+console.log(new Date('December 24, 2014'));
+console.log(new Date(account1.movementsDates[0]));
+
+console.log(new Date(0));
+console.log(new Date(3 * 24 * 60 * 60 * 1000)); // to find 3 days later
+*/
+//Working with dates 
+const future = new Date(2037, 10, 19, 15, 23);
+console.log(future.getFullYear());
+console.log(future.getMonth());
+console.log(future.getDate());
+console.log(future.getDay());
+console.log(future.getHours());
+console.log(future.getMinutes());
+console.log(future.getSeconds());
+console.log(future.toISOString());
+console.log(future.getTime());
+
+console.log(new Date(2142235380000)); //get the exact date from millisecond 
