@@ -34,7 +34,6 @@ const account2 = {
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
-
   movementsDates: [
     '2019-11-01T13:15:33.035Z',
     '2019-11-30T09:48:16.867Z',
@@ -154,6 +153,21 @@ const updateUI = function (acc) {
 ///////////////////////////////////////
 // Event handlers
 let currentAccount;
+
+// Fake ALWAYS LOGGED IN
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+
+const now = new Date();
+
+const day = now.getDate();
+const month = now.getMonth() + 1;
+const year = now.getFullYear();
+const hour = now.getHours();
+const min = now.getMinutes();
+
+labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
@@ -339,14 +353,30 @@ const isEven = n => n % 2 === 0;
 console.log(isEven(2));
 
 labelBalance.addEventListener('click', function () {
-  [...document.querySelectorAll('.movements__row')].forEach(function(row, i){
-    if(i % 2 === 0 ) row.style.backgroundColor = 'blue'
-  })
-  
-})
+  [...document.querySelectorAll('.movements__row')].forEach(function (row, i) {
+    if (i % 2 === 0) row.style.backgroundColor = 'blue';
+  });
+});
 
 // underscore in number, is numeric separators. It's shows how is the number ex:
-const diameter = 245_464_432_00
-console.log(diameter) // 24546443200
+const diameter = 245_464_432_00;
+console.log(diameter); // 24546443200
 
 // Numeric operators doesn't support in string. It always support number.
+
+console.log(34324243763762748624786372463784634786n); // BigInt
+console.log(BigInt(34324243763762748624786372463784634786)); // Second way
+
+//operations
+console.log(10000n + 10000n);
+
+const huge = 354156745165751456n;
+const num = 23;
+
+console.log(huge * BigInt(num));
+
+console.log(huge + ' Is really big num');
+
+//Divisions
+console.log(10n / 3n);
+console.log(10 / 3);
