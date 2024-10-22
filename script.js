@@ -16,11 +16,11 @@ const account1 = {
   pin: 1111,
 
   movementsDates: [
-    '2019-11-18T21:31:17.178Z',
-    '2019-12-23T07:42:02.383Z',
-    '2020-01-28T09:15:04.904Z',
-    '2020-04-01T10:17:24.185Z',
-    '2020-05-08T14:11:59.604Z',
+    '2024-11-18T21:31:17.178Z',
+    '2024-12-23T07:42:02.383Z',
+    '2024-01-28T09:15:04.904Z',
+    '2024-04-01T10:17:24.185Z',
+    '2024-05-08T14:11:59.604Z',
     '2024-10-20T10:01:17.194Z',
     '2024-10-15T23:36:17.929Z',
     '2024-10-21T10:51:36.790Z',
@@ -89,25 +89,34 @@ const formatMovementDate = function (date) {
 
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
-  if (daysPassed <= 7) return 'Yesterday';
-  
-    const day = `${date.getDate()}`.padStart(2, 0);
-    const month = `${date.getMonth() + 1}`.padStart(2, 0);
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  
+  if (daysPassed <= 7) return '7 days ago';
+
+  // const day = `${date.getDate()}`.padStart(2, 0);
+  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const year = date.getFullYear();
+  // return `${day}/${month}/${year}`;
+  return new Intl.DateTimeFormat(currentAccount.locale).format(date);
 };
+
+const formatCur = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
-
   const movs = sort
     ? acc.movements.slice().sort((a, b) => a - b)
     : acc.movements;
-
   movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
+
     const date = new Date(acc.movementsDates[i]);
-    const displayDate = formatMovementDate(date);
+
+    const displayDate = formatMovementDate(date, acc.locale);
+    const formattedMov = formatCur(mov, acc.locale, acc.currency);
 
     const html = `
       <div class="movements__row">
@@ -115,7 +124,7 @@ const displayMovements = function (acc, sort = false) {
       i + 1
     } ${type}</div>
      <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${mov.toFixed(2)}€</div>
+        <div class="movements__value">${formattedMov}</div>
       </div>
     `;
 
@@ -125,19 +134,19 @@ const displayMovements = function (acc, sort = false) {
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
+  labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
 };
 
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
+  labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency); //`${incomes.toFixed(2)}€`;
 
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
+  labelSumOut.textContent = formatCur(Math.abs(out), acc.locale, acc.currency); // `${Math.abs(out).toFixed(2)}€`;
 
   const interest = acc.movements
     .filter(mov => mov > 0)
@@ -147,7 +156,8 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
+  `${interest.toFixed(2)}€`;
 };
 
 const createUsernames = function (accs) {
@@ -181,7 +191,7 @@ currentAccount = account1;
 updateUI(currentAccount);
 containerApp.style.opacity = 100;
 
-const now = new Date();
+// Experimenting with the API
 
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
@@ -199,6 +209,22 @@ btnLogin.addEventListener('click', function (e) {
     }`;
     containerApp.style.opacity = 100;
 
+    // Create current date and time
+    const now = new Date();
+    const options = {
+      hour: 'numeric',
+      minute: 'numeric',
+      day: 'numeric',
+      month: 'numeric',
+      year: '2-digit',
+    };
+    // const local = navigator.language;
+    // console.log(local);
+
+    labelDate.textContent = new Intl.DateTimeFormat(
+      currentAccount.locale,
+      options
+    ).format(now);
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
@@ -227,7 +253,7 @@ btnTransfer.addEventListener('click', function (e) {
     receiverAcc.movements.push(amount);
 
     //Add transfer date
-    currentAccount.movementsDates.push(new Date()).toISOString();
+    currentAccount.movementsDates.push(new Date().toISOString());
     receiverAcc.movementsDates.push(new Date().toISOString());
 
     // Update UI
@@ -241,14 +267,15 @@ btnLoan.addEventListener('click', function (e) {
   const amount = Math.floor(inputLoanAmount.value);
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-    // Add movement
-    currentAccount.movements.push(amount);
+    setTimeout(() => {
+      currentAccount.movements.push(amount);
 
-    //Add loan date
-    currentAccount.movementsDates.push(new Date().toISOString());
+      //Add loan date
+      currentAccount.movementsDates.push(new Date().toISOString());
 
-    // Update UI
-    updateUI(currentAccount);
+      // Update UI
+      updateUI(currentAccount);
+    }, 3000); // Add movement
   }
   inputLoanAmount.value = '';
 });
@@ -317,7 +344,7 @@ console.log(Number.isFinite('20'));
 console.log(Number.isInteger(23));
 console.log(Number.isInteger(23.0));
 console.log(Number.isInteger(23 / 0));
-*/
+
 
 //Square root.
 console.log(Math.sqrt(25));
@@ -372,13 +399,14 @@ console.log(7 / 2);
 
 const isEven = n => n % 2 === 0;
 console.log(isEven(2));
-
+*/
 labelBalance.addEventListener('click', function () {
   [...document.querySelectorAll('.movements__row')].forEach(function (row, i) {
     if (i % 2 === 0) row.style.backgroundColor = 'blue';
   });
 });
 
+/*
 // underscore in number, is numeric separators. It's shows how is the number ex:
 const diameter = 245_464_432_00;
 console.log(diameter); // 24546443200
@@ -401,7 +429,7 @@ console.log(huge + ' Is really big num');
 //Divisions
 console.log(10n / 3n);
 console.log(10 / 3);
-/*
+
 // Create a date
 const now2 = new Date();
 console.log(now2);
@@ -412,7 +440,7 @@ console.log(new Date(account1.movementsDates[0]));
 
 console.log(new Date(0));
 console.log(new Date(3 * 24 * 60 * 60 * 1000)); // to find 3 days later
-*/
+
 //Working with dates
 const future = new Date(2037, 10, 19, 15, 23);
 console.log(future.getFullYear());
@@ -433,5 +461,35 @@ console.log(+future2);
 const calcDaysPassed = (date1, date2) =>
   Math.abs(date2 - date1) / (1000 * 60 * 60 * 24);
 
-const days1 = calcDaysPassed(new Date(2037, 3, 14), new Date(2037, 3, 4));
+const days1 = calcDaysPassed(new Date(2037, 3, 4), new Date(2037, 3, 14));
 console.log(days1);
+
+
+//Basic formatting
+const num = 3884764.23;
+
+const options = {
+  style: 'currency',
+  unit: 'celsius',
+  currency: 'EUR',
+  // useGrouping: false,
+
+  // minimumFractionDigits: 2,
+  // maximumFractionDigits: 2,
+};
+
+console.log('US: ', new Intl.NumberFormat('en-US', options).format(num));
+console.log('Germany: ', new Intl.NumberFormat('de-DE', options).format(num));
+console.log(
+  navigator.language,
+  new Intl.NumberFormat(navigator.language, options).format(num)
+);
+*/
+const ingredients = ['Tomato', 'Spinach'];
+const timer = setTimeout(
+  (int1, int2) => console.log(`Timer 1 finished ${int1} and ${int2}`),
+  3000,
+  ...ingredients
+);
+console.log('waiting...');
+if (ingredients.includes('Spinach')) clearTimeout(timer);
