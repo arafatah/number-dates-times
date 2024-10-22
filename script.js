@@ -493,3 +493,18 @@ const timer = setTimeout(
 );
 console.log('waiting...');
 if (ingredients.includes('Spinach')) clearTimeout(timer);
+
+const interval = setInterval(function () {
+  const now = new Date();
+  const hour = now.getHours();
+  const min = now.getMinutes();
+  const sec = now.getSeconds();
+  console.log(`${hour}:${min}:${sec}`);
+
+  // if (hour === 0 && min === 0 && sec === 0) {
+  //   clearInterval(interval);
+  // }
+  // clearInterval(interval);
+
+  // console.log(now);
+}, 1000);
