@@ -485,7 +485,7 @@ console.log(
   new Intl.NumberFormat(navigator.language, options).format(num)
 );
 */
-const ingredients = ['Tomato', 'Spinach'];
+/* const ingredients = ['Tomato', 'Spinach'];
 const timer = setTimeout(
   (int1, int2) => console.log(`Timer 1 finished ${int1} and ${int2}`),
   3000,
@@ -508,3 +508,4 @@ const interval = setInterval(function () {
 
   // console.log(now);
 }, 1000);
+ */
