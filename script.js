@@ -313,7 +313,6 @@ btnLoan.addEventListener('click', function (e) {
       // Reset timer
       clearInterval(timer);
       timer = startLogOutTimer();
-      
     }, 3000); // Add movement
   }
   inputLoanAmount.value = '';
@@ -548,3 +547,18 @@ const interval = setInterval(function () {
   // console.log(now);
 }, 1000);
  */
+const ingredients = ['Tomato', 'Spinach'];
+const PizzaTimer = setTimeout(
+  (ing3, ing4) => {
+    console.log(`Here is your pizza with ${ing3} and ${ing4}🍕`);
+  },
+  3000,
+  ...ingredients
+);
+console.log('Waiting...');
+
+if (ingredients.includes('Spinach')) {
+  clearTimeout(PizzaTimer);
+  console.log('Pizza has spinach');
+  
+}
