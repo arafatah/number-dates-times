@@ -1,12 +1,7 @@
 'use strict';
 
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
 // BANKIST APP
-
-/////////////////////////////////////////////////
 // Data
-
 // DIFFERENT DATA! Contains movement dates, currency and locale
 
 const account1 = {
@@ -547,6 +542,7 @@ const interval = setInterval(function () {
   // console.log(now);
 }, 1000);
  */
+
 const ingredients = ['Tomato', 'Spinach'];
 const PizzaTimer = setTimeout(
   (ing3, ing4) => {
@@ -560,5 +556,8 @@ console.log('Waiting...');
 if (ingredients.includes('Spinach')) {
   clearTimeout(PizzaTimer);
   console.log('Pizza has spinach');
-  
 }
+
+
+////////////////////////////
+
