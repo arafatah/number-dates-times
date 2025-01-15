@@ -72,7 +72,7 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-/////////////////////////////////////////////////
+//////////////////////////////////////////
 // Functions
 
 const formatMovementDate = function (date) {
@@ -87,7 +87,7 @@ const formatMovementDate = function (date) {
   if (daysPassed <= 7) return '7 days ago';
 
   // const day = `${date.getDate()}`.padStart(2, 0);
-  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
+  // const month = `${dat///////e.getMonth() + 1}`.padStart(2, 0);
   // const year = date.getFullYear();
   // return `${day}/${month}/${year}`;
   return new Intl.DateTimeFormat(currentAccount.locale).format(date);
@@ -558,6 +558,85 @@ if (ingredients.includes('Spinach')) {
   console.log('Pizza has spinach');
 }
 
+// parsing - starting should be a number
+console.log(Number.parseInt('41px'));
+
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
+console.log(randomInt(10, 20));
+
+const isEven = num => num % 2 === 0;
+
+console.log(isEven(45));
 
 ////////////////////////////
 
+const stats = document.querySelectorAll('.counter');
+
+stats.forEach(stat => {
+  // pattern used to separate input number from html into an array of numbers and non numbers. EX $65.3M -> ["$65.3M", "$", "65", ".", "3", "M"]
+  const patt = /(\D+)?(\d+)(\D+)?(\d+)?(\D+)?/;
+  const time = 1000;
+  let result = [...patt.exec(stat.textContent)];
+  let fresh = true;
+  let ticks;
+
+  // Remove first full match from result array (we don't need the full match, just the individual match groups).
+  result.shift();
+  // Remove undefined values from result array where they did'nt have a match in one of the optional regex groups
+  result = result.filter(res => res != null);
+
+  while (stat.firstChild) {
+    stat.removeChild(stat.firstChild);
+  }
+
+  for (let res of result) {
+    if (isNaN(res)) {
+      stat.insertAdjacentHTML('beforeend', `<span>${res}</span>`);
+    } else {
+      for (let i = 0; i < res.length; i++) {
+        stat.insertAdjacentHTML(
+          'beforeend',
+          `<span data-value="${res[i]}">
+						<span>&ndash;</span>
+						${Array(parseInt(res[i]) + 1)
+              .join(0)
+              .split(0)
+              .map(
+                (x, j) => `
+							<span>${j}</span>
+						`
+              )
+              .join('')}
+					</span>`
+        );
+      }
+    }
+  }
+
+  ticks = [...stat.querySelectorAll('span[data-value]')];
+
+  let activate = () => {
+    let top = stat.getBoundingClientRect().top;
+    let offset = window.innerHeight * 0.8;
+
+    setTimeout(() => {
+      fresh = false;
+    }, time);
+
+    if (top < offset) {
+      setTimeout(
+        () => {
+          for (let tick of ticks) {
+            let dist = parseInt(tick.getAttribute('data-value')) + 1;
+            tick.style.transform = `translateY(-${dist * 100}%)`;
+          }
+        },
+        fresh ? time : 0
+      );
+      window.removeEventListener('scroll', activate);
+    }
+  };
+  window.addEventListener('scroll', activate);
+  activate();
+});
