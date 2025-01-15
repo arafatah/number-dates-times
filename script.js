@@ -569,6 +569,13 @@ const isEven = num => num % 2 === 0;
 
 console.log(isEven(45));
 
+// Biggest number in JS
+console.log(2 ** 53 - 1);
+
+// Month in JavaScript is 0 based. Like 0 means January, and 1 means February.
+new Date();
+new Date('Jan, 3, 2022');
+
 ////////////////////////////
 
 const stats = document.querySelectorAll('.counter');
