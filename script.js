@@ -998,3 +998,4 @@ stats.forEach(stat => {
   window.addEventListener('scroll', activate);
   activate();
 });
+
