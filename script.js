@@ -576,6 +576,20 @@ console.log(2 ** 53 - 1);
 new Date();
 new Date('Jan, 3, 2022');
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ////////////////////////////
 
 const stats = document.querySelectorAll('.counter');
