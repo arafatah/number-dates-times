@@ -80,7 +80,7 @@ const formatMovementDate = function (date) {
     Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
   const daysPassed = calcDaysPassed(new Date(), date);
-  console.log(daysPassed);
+  // console.log(daysPassed);
 
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
@@ -102,18 +102,28 @@ const formatCur = function (value, locale, currency) {
 
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
-  const movs = sort
-    ? acc.movements.slice().sort((a, b) => a - b)
-    : acc.movements;
-  movs.forEach(function (mov, i) {
-    const type = mov > 0 ? 'deposit' : 'withdrawal';
 
-    const date = new Date(acc.movementsDates[i]);
+  const combineMovesDate = acc.movements.map((mov, i) => ({
+    movement: mov,
+    movementDate: acc.movementsDates.at(i),
+  }));
+
+  if (sort) combineMovesDate.sort((a, b) => a.movement - b.movement);
+
+  // const movs = sort
+  //   ? acc.movements.slice().sort((a, b) => a - b)
+  //   : acc.movements;
+
+  combineMovesDate.forEach(function (obj, i) {
+    const { movement, movementDate } = obj;
+    const type = movement > 0 ? 'deposit' : 'withdrawal';
+
+    const date = new Date(movementDate);
 
     const displayDate = formatMovementDate(date, acc.locale);
-    const formattedMov = formatCur(mov, acc.locale, acc.currency);
+    const formattedMov = formatCur(movement, acc.locale, acc.currency);
 
-    const html = `
+    const html = `f
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
@@ -196,7 +206,7 @@ const startLogOutTimer = function () {
     time--;
   };
   // Set time to 5 minutes
-  let time = 10;
+  let time = 100;
   //call the timer every second
   tick();
   const timer = setInterval(tick, 1000);
@@ -576,15 +586,13 @@ console.log(2 ** 53 - 1);
 new Date();
 new Date('Jan, 3, 2022');
 
+const future = new Date(2037, 10, 17, 23);
 
+const calcDaysPassed = (date1, date2) =>
+  Math.abs(date1 - date2) / (1000 * 60 * 60 * 24);
 
-
-
-
-
-
-
-
+const days1 = calcDaysPassed(new Date(2037, 11, 4), new Date(2037, 11, 24));
+console.log(days1);
 
 
 
