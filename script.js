@@ -42,8 +42,26 @@ const account2 = {
   currency: 'USD',
   locale: 'en-US',
 };
+const account3 = {
+  owner: 'Arafat Howlader',
+  movements: [55000, 300, -150, -7910, -3210, -10040, 85500, -300],
+  interestRate: 1.5,
+  pin: 3333,
+  movementsDates: [
+    '2019-11-01T13:15:33.035Z',
+    '2019-11-30T09:48:16.867Z',
+    '2019-12-25T06:04:23.907Z',
+    '2020-01-25T14:18:46.235Z',
+    '2020-02-05T16:33:06.386Z',
+    '2025-01-10T14:43:26.374Z',
+    '2025-01-15T18:49:59.371Z',
+    '2025-01-13T12:01:20.894Z',
+  ],
+  currency: 'BDT',
+  locale: 'bn-BD',
+};
 
-const accounts = [account1, account2];
+const accounts = [account1, account2, account3];
 
 /////////////////////////////////////////////////
 // Elements
@@ -75,7 +93,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 //////////////////////////////////////////
 // Functions
 
-const formatMovementDate = function (date) {
+const formatMovementDate = date => {
   const calcDaysPassed = (date1, date2) =>
     Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
@@ -93,7 +111,7 @@ const formatMovementDate = function (date) {
   return new Intl.DateTimeFormat(currentAccount.locale).format(date);
 };
 
-const formatCur = function (value, locale, currency) {
+const formatCur = (value, locale, currency) => {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
     currency: currency,
@@ -123,7 +141,7 @@ const displayMovements = function (acc, sort = false) {
     const displayDate = formatMovementDate(date, acc.locale);
     const formattedMov = formatCur(movement, acc.locale, acc.currency);
 
-    const html = `f
+    const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
@@ -202,7 +220,7 @@ const startLogOutTimer = function () {
       containerApp.style.opacity = 0;
     }
 
-    //Decrease 1s
+    // Decrease 1s
     time--;
   };
   // Set time to 5 minutes
@@ -246,8 +264,9 @@ btnLogin.addEventListener('click', function (e) {
       hour: 'numeric',
       minute: 'numeric',
       day: 'numeric',
-      month: 'numeric',
-      year: '2-digit',
+      month: 'numeric', // numeric / long
+      year: '2-digit', // numeric / long
+      weekday: 'long',
     };
     // const local = navigator.language;
     // console.log(local);
@@ -594,9 +613,319 @@ const calcDaysPassed = (date1, date2) =>
 const days1 = calcDaysPassed(new Date(2037, 11, 4), new Date(2037, 11, 24));
 console.log(days1);
 
+// Unit, percent, currency There are three(3) Intl.NumberFormat
+const num = 34454532.343;
 
+const option = {
+  style: 'currency',
+  unit: 'celsius',
+  currency: 'EUR',
+  useGrouping: false,
+};
+console.log('BD:', new Intl.NumberFormat('bn-BD', option).format(num));
+console.log('US:', new Intl.NumberFormat('en-US', option).format(num));
+console.log('Syria:', new Intl.NumberFormat('ar-SY', option).format(num));
+console.log('Germen:', new Intl.NumberFormat('de-DE', option).format(num));
 
+console.log(
+  navigator.language,
+  new Intl.NumberFormat(navigator.language).format(num)
+);
 
+// We can pass Argument in this function also.
+// It's like, all the argument after the delay argument, is the function argument.
+const ingredients2 = ['olives', 'spinach'];
+const PizzaTimer2 = setTimeout(
+  (ing1, ing2) => {
+    console.log(`Here is your pizza with ${ing1} & ${ing2}🍕`);
+  },
+  1000,
+  ...ingredients2
+);
+console.log('waiting.....');
+if (ingredients2.includes('spinach')) clearTimeout(PizzaTimer2);
+
+setInterval(() => {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+  // console.log(`${hours}:${minutes}:${seconds}`);
+}, 1000);
+
+////////////////////////////////
+(function ($) {
+  'use strict';
+  $.fn.rProgressbar = function (options) {
+    options = $.extend(
+      {
+        percentage: null,
+        ShowProgressCount: true,
+        duration: 1000,
+        backgroundColor: 'none',
+        borderRadius: 'none',
+        width: '100%',
+        height: '3px',
+        overflow: 'visible',
+      },
+      options
+    );
+    return this.each(function (index, el) {
+      $(el).html(
+        '<div class="progressbar"><div class="proggress"> <div class="indicator"></div></div><div class="percentCount"></div>'
+      );
+      var progressFill = $(el).find('.proggress');
+      var proggressIndicator = $(el).find('.indicator');
+      var progressBar = $(el).find('.progressbar');
+      var percentCount = $(el).find('.percentCount');
+      progressFill.css({
+        backgroundColor: options.fillBackgroundColor,
+        height: options.height,
+        borderRadius: options.borderRadius,
+      });
+      progressBar.css({
+        width: options.width,
+        backgroundColor: options.backgroundColor,
+        borderRadius: options.borderRadius,
+      });
+      proggressIndicator.css({ overflow: options.overflow });
+      var updateProgress = function () {
+        progressFill.animate(
+          { width: options.percentage + '%' },
+          {
+            duration: options.duration,
+            step: function (x) {
+              if (options.ShowProgressCount) {
+                percentCount.text(Math.round(x) + '%');
+              }
+            },
+          }
+        );
+      };
+      $(this).waypoint(updateProgress, {
+        offset: '100%',
+        triggerOnce: true,
+      });
+    });
+  };
+  // Initialize progress bars
+  $('.progressbar-one').rProgressbar({
+    percentage: 90,
+  });
+  $('.progressbar-two').rProgressbar({
+    percentage: 80,
+  });
+  $('.progressbar-three').rProgressbar({
+    percentage: 92,
+  });
+  $('.progressbar-four').rProgressbar({
+    percentage: 59,
+  });
+  $('.progressbar-five').rProgressbar({
+    percentage: 86,
+  });
+  $('.progressbar-six').rProgressbar({
+    percentage: 90,
+    height: '8px',
+    borderRadius: '4px',
+  });
+  $('.progressbar-seven').rProgressbar({
+    percentage: 75,
+    height: '8px',
+    borderRadius: '4px',
+  });
+  $('.progressbar-eight').rProgressbar({
+    percentage: 85,
+    height: '8px',
+    borderRadius: '4px',
+  });
+  $('.progressbar-nine').rProgressbar({
+    percentage: 80,
+    height: '8px',
+    borderRadius: '4px',
+  });
+
+  // Scroll-based progress bar trigger
+  $(window).on('scroll', function () {
+    $('.progressbar .proggress').each(function () {
+      var bottom_of_object = $(this).offset().top + $(this).outerHeight();
+      var bottom_of_window = $(window).scrollTop() + $(window).height();
+      var myVal = $(this).attr('data-value');
+      if (bottom_of_window > bottom_of_object) {
+        $(this)
+          .css({
+            width: myVal,
+          })
+          .siblings('.percentCount')
+          .text(myVal);
+      }
+    });
+  });
+})(jQuery)(function ($) {
+  'use strict';
+  // Animated Progress Bar
+  $('[progress-bar]').each(function () {
+    $(this)
+      .find('.progress-fill')
+      .animate(
+        {
+          width: $(this).attr('data-percentage'),
+        },
+        2000
+      );
+
+    $(this)
+      .find('.progress-number-mark')
+      .animate(
+        { left: $(this).attr('data-percentage') },
+        {
+          duration: 2000,
+          step: function (now, fx) {
+            var data = Math.round(now);
+            $(this)
+              .find('.percent')
+              .html(data + '%');
+          },
+        }
+      );
+  });
+})(jQuery);
+
+/////////////////// ------
+(function ($) {
+  'use strict';
+  $.fn.rProgressbar = function (options) {
+    options = $.extend(
+      {
+        percentage: null,
+        ShowProgressCount: true,
+        duration: 1000,
+        backgroundColor: 'none',
+        borderRadius: 'none',
+        width: '100%',
+        height: '3px',
+        overflow: 'visible',
+      },
+      options
+    );
+
+    return this.each(function (index, el) {
+      $(el).html(
+        '<div class="progressbar"><div class="proggress"> <div class="indicator"></div></div><div class="percentCount"></div>'
+      );
+      var progressFill = $(el).find('.proggress');
+      var proggressIndicator = $(el).find('.indicator');
+      var progressBar = $(el).find('.progressbar');
+      var percentCount = $(el).find('.percentCount');
+      progressFill.css({
+        backgroundColor: options.fillBackgroundColor,
+        height: options.height,
+        borderRadius: options.borderRadius,
+      });
+      progressBar.css({
+        width: options.width,
+        backgroundColor: options.backgroundColor,
+        borderRadius: options.borderRadius,
+      });
+      proggressIndicator.css({ overflow: options.overflow });
+      var updateProgress = function () {
+        progressFill.animate(
+          { width: options.percentage + '%' },
+          {
+            duration: options.duration,
+            step: function (x) {
+              if (options.ShowProgressCount) {
+                percentCount.text(Math.round(x) + '%');
+              }
+            },
+          }
+        );
+      };
+      $(this).waypoint(updateProgress, { offset: '100%', triggerOnce: true });
+    });
+  };
+
+  // Initialize progress bars
+  $('.progressbar-one').rProgressbar({
+    percentage: 90,
+  });
+  $('.progressbar-two').rProgressbar({
+    percentage: 80,
+  });
+  $('.progressbar-three').rProgressbar({
+    percentage: 92,
+  });
+  $('.progressbar-four').rProgressbar({
+    percentage: 59,
+  });
+  $('.progressbar-five').rProgressbar({
+    percentage: 86,
+  });
+  $('.progressbar-six').rProgressbar({
+    percentage: 90,
+    height: '8px',
+    borderRadius: '4px',
+  });
+  $('.progressbar-seven').rProgressbar({
+    percentage: 75,
+    height: '8px',
+    borderRadius: '4px',
+  });
+  $('.progressbar-eight').rProgressbar({
+    percentage: 85,
+    height: '8px',
+    borderRadius: '4px',
+  });
+  $('.progressbar-nine').rProgressbar({
+    percentage: 80,
+    height: '8px',
+    borderRadius: '4px',
+  });
+
+  // Scroll-based progress bar trigger
+  $(window).on('scroll', function () {
+    $('.progressbar .proggress').each(function () {
+      var bottom_of_object = $(this).offset().top + $(this).outerHeight();
+      var bottom_of_window = $(window).scrollTop() + $(window).height();
+      var myVal = $(this).attr('data-value');
+      if (bottom_of_window > bottom_of_object) {
+        $(this)
+          .css({
+            width: myVal,
+          })
+          .siblings('.percentCount')
+          .text(myVal);
+      }
+    });
+  });
+
+  // Animated Progress Bar
+  $('[progress-bar]').each(function () {
+    $(this)
+      .find('.progress-fill')
+      .animate(
+        {
+          width: $(this).attr('data-percentage'),
+        },
+        2000
+      );
+
+    $(this)
+      .find('.progress-number-mark')
+      .animate(
+        { left: $(this).attr('data-percentage') },
+        {
+          duration: 2000,
+          step: function (now, fx) {
+            var data = Math.round(now);
+            $(this)
+              .find('.percent')
+              .html(data + '%');
+          },
+        }
+      );
+  });
+})(jQuery);
 
 ////////////////////////////
 
